@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="AyurGuard — Smart Ayurveda Companion. Detect dosha imbalance, check herb safety, and get seasonal lifestyle guidance." />
+    <title>AyurGuard — Smart Ayurveda Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="TargetCursor.css" />
+    <!-- GSAP for TargetCursor animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+</head>
+
+<body>
+
+    <script src="app.js"></script>
+    <script>AG_renderNav('home');</script>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home" aria-label="Hero">
+        <div class="hero-bg-glow hero-bg-glow--1" aria-hidden="true"></div>
+        <div class="hero-bg-glow hero-bg-glow--2" aria-hidden="true"></div>
+
+        <div class="hero-container">
+            <!-- Left Content -->
+            <div class="hero-content">
+                <span class="hero-badge">
+                    <span class="hero-badge__dot"></span>
+                    AI-Powered · Ayurveda · Science
+                </span>
+                <h1 class="hero-heading">
+                    Your Smart<br />
+                    <span class="gradient-text">Ayurveda</span><br />
+                    Companion
+                </h1>
+                <p class="hero-sub">
+                    Detect Dosha imbalances, check herb–medicine safety, and get
+                    personalized seasonal health guidance — rooted in 5,000-year-old
+                    Ayurvedic wisdom, enhanced by modern logic.
+                </p>
+                <div class="hero-actions">
+                    <a href="dosha-test.html" class="btn btn-primary btn-lg cursor-target" id="hero-dosha-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M12 2C6.5 2 4 5.5 4 9c0 4 2 6.5 5 8l1 2h4l1-2c3-1.5 5-4 5-8 0-3.5-2.5-7-8-7z" />
+                        </svg>
+                        Take Dosha Test
+                    </a>
+                    <a href="herb-safety.html" class="btn btn-outline btn-lg cursor-target" id="hero-herb-btn">Herb
+                        Safety Checker</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hero-stat__num gradient-text">5000+</div>
+                        <div class="hero-stat__label">Years of Wisdom</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat__num gradient-text">30+</div>
+                        <div class="hero-stat__label">Herb Interactions</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat__num gradient-text">6</div>
+                        <div class="hero-stat__label">Indian Seasons</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Visual — Animated mandala -->
+            <div class="hero-visual" aria-hidden="true">
+                <div class="visual-mandala">
+                    <div class="mandala-ring mandala-ring--1"></div>
+                    <div class="mandala-ring mandala-ring--2"></div>
+                    <div class="mandala-ring mandala-ring--3"></div>
+                    <div class="mandala-ring mandala-ring--4"></div>
+
+                    <svg class="mandala-svg" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="mg1" x1="0" y1="0" x2="340" y2="340" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00C896" stop-opacity="0.6" />
+                                <stop offset="1" stop-color="#7B61FF" stop-opacity="0.4" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Petals (lotus design) -->
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(45 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(90 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(135 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(180 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(225 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(270 170 170)" />
+                        <ellipse cx="170" cy="100" rx="20" ry="50" stroke="url(#mg1)" stroke-width="1" fill="none"
+                            transform="rotate(315 170 170)" />
+                        <!-- Inner hexagon -->
+                        <polygon points="170,130 196,145 196,175 170,190 144,175 144,145" stroke="url(#mg1)"
+                            stroke-width="1.5" fill="none" opacity="0.7" />
+                        <!-- Dots at petal tips -->
+                        <circle cx="170" cy="58" r="4" fill="#00C896" opacity="0.7" />
+                        <circle cx="220" cy="82" r="3" fill="#F5A623" opacity="0.6" />
+                        <circle cx="240" cy="135" r="3" fill="#7B61FF" opacity="0.6" />
+                        <circle cx="220" cy="188" r="3" fill="#00C896" opacity="0.5" />
+                        <circle cx="170" cy="212" r="4" fill="#F5A623" opacity="0.7" />
+                        <circle cx="120" cy="188" r="3" fill="#7B61FF" opacity="0.5" />
+                        <circle cx="100" cy="135" r="3" fill="#00C896" opacity="0.6" />
+                        <circle cx="120" cy="82" r="3" fill="#F5A623" opacity="0.6" />
+                    </svg>
+
+                    <div class="mandala-center"></div>
+                    <div class="mandala-orb mandala-orb--1"></div>
+                    <div class="mandala-orb mandala-orb--2"></div>
+                    <div class="mandala-orb mandala-orb--3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features" aria-label="Features">
+        <div class="section-container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-label">// What AyurGuard Offers</span>
+                <h2 class="section-title">Complete Ayurveda <span class="gradient-text">Intelligence</span></h2>
+                <p class="section-sub">Six powerful tools that blend ancient Ayurvedic wisdom with modern health logic.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <!-- 1 -->
+                <a href="dosha-test.html" class="feature-card cursor-target" data-animate="fade-up" data-delay="0">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="24" cy="24" r="18" stroke="url(#fi1)" stroke-width="2" />
+                            <path d="M24 12v12l8 8" stroke="url(#fi1)" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="24" cy="24" r="3" fill="url(#fi1)" />
+                            <defs>
+                                <linearGradient id="fi1" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00C896" />
+                                    <stop offset="1" stop-color="#7B61FF" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Dosha Detection</h3>
+                    <p class="feature-card__desc">Daily questionnaire tracks Vata, Pitta & Kapha imbalance with
+                        real-time scoring and personalized guidance.</p>
+                    <span class="feature-card__link">Start Test <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+
+                <!-- 2 -->
+                <a href="herb-safety.html" class="feature-card cursor-target" data-animate="fade-up" data-delay="100">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M24 6C14 6 8 14 8 22c0 10 8 18 16 20 8-2 16-10 16-20 0-8-6-16-16-16z"
+                                stroke="url(#fi2)" stroke-width="2" />
+                            <path d="M24 16 Q20 20 16 26 Q20 30 24 36 Q28 30 32 26 Q28 20 24 16z" stroke="url(#fi2)"
+                                stroke-width="1.5" fill="none" />
+                            <defs>
+                                <linearGradient id="fi2" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00C896" />
+                                    <stop offset="1" stop-color="#7B61FF" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Herb Safety Checker</h3>
+                    <p class="feature-card__desc">Check 30+ Ayurvedic herb × modern medicine interactions instantly with
+                        risk levels and clinical explanations.</p>
+                    <span class="feature-card__link">Check Now <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+
+                <!-- 3 -->
+                <a href="seasonal-guide.html" class="feature-card cursor-target" data-animate="fade-up"
+                    data-delay="200">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="24" cy="24" r="10" stroke="url(#fi3)" stroke-width="2" />
+                            <line x1="24" y1="6" x2="24" y2="2" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="24" y1="46" x2="24" y2="42" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="6" y1="24" x2="2" y2="24" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="46" y1="24" x2="42" y2="24" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="11" y1="11" x2="8" y2="8" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="40" y1="8" x2="37" y2="11" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="11" y1="37" x2="8" y2="40" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="37" y1="37" x2="40" y2="40" stroke="url(#fi3)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <defs>
+                                <linearGradient id="fi3" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#F5A623" />
+                                    <stop offset="1" stop-color="#00C896" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Seasonal Guide (Ritucharya)</h3>
+                    <p class="feature-card__desc">Auto-detects your current Indian season and prescribes diet, routine,
+                        yoga, and herbs for optimal health.</p>
+                    <span class="feature-card__link">View Season <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+
+                <!-- 4 -->
+                <a href="symptom-checker.html" class="feature-card cursor-target" data-animate="fade-up" data-delay="0">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="8" y="4" width="32" height="40" rx="4" stroke="url(#fi4)" stroke-width="2" />
+                            <line x1="16" y1="16" x2="32" y2="16" stroke="url(#fi4)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="16" y1="24" x2="28" y2="24" stroke="url(#fi4)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <path d="M16 32l4 4 8-8" stroke="url(#fi4)" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <defs>
+                                <linearGradient id="fi4" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#7B61FF" />
+                                    <stop offset="1" stop-color="#00C896" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Symptom Checker</h3>
+                    <p class="feature-card__desc">Tick your current symptoms and instantly discover which Dosha is
+                        imbalanced with actionable Ayurvedic remedies.</p>
+                    <span class="feature-card__link">Check Symptoms <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+
+                <!-- 5 -->
+                <a href="food-checker.html" class="feature-card cursor-target" data-animate="fade-up" data-delay="100">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M24 8c-8 0-14 6-14 14 0 6 4 11 10 13v9h8v-9c6-2 10-7 10-13 0-8-6-14-14-14z"
+                                stroke="url(#fi5)" stroke-width="2" />
+                            <line x1="20" y1="28" x2="28" y2="28" stroke="url(#fi5)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <line x1="18" y1="22" x2="30" y2="22" stroke="url(#fi5)" stroke-width="2"
+                                stroke-linecap="round" />
+                            <defs>
+                                <linearGradient id="fi5" x1="10" y1="8" x2="38" y2="44" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#F5A623" />
+                                    <stop offset="1" stop-color="#7B61FF" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Food Compatibility</h3>
+                    <p class="feature-card__desc">Check Viruddha Ahara — discover which food combinations are toxic or
+                        beneficial according to Ayurvedic principles.</p>
+                    <span class="feature-card__link">Check Food <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+
+                <!-- 6 -->
+                <a href="dashboard.html" class="feature-card cursor-target" data-animate="fade-up" data-delay="200">
+                    <div class="feature-card__icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="4" y="24" width="10" height="18" rx="2" stroke="url(#fi6)" stroke-width="2" />
+                            <rect x="19" y="14" width="10" height="28" rx="2" stroke="url(#fi6)" stroke-width="2" />
+                            <rect x="34" y="6" width="10" height="36" rx="2" stroke="url(#fi6)" stroke-width="2" />
+                            <defs>
+                                <linearGradient id="fi6" x1="4" y1="6" x2="44" y2="42" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00C896" />
+                                    <stop offset="1" stop-color="#F5A623" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="feature-card__title">Health Dashboard</h3>
+                    <p class="feature-card__desc">Track your weekly dosha trends, get today's personalized diet plan,
+                        and monitor your health journey over time.</p>
+                    <span class="feature-card__link">Open Dashboard <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Circular Gallery ── -->
+    <section class="section gallery-section" id="gallery" aria-label="Ayurvedic food gallery"
+        style="padding:60px 0;overflow:hidden">
+        <div class="section-header" data-animate="fade-up" style="padding:0 24px;margin-bottom:0">
+            <span class="section-label">// Satvik Kitchen</span>
+            <h2 class="section-title">Eat Right for Your <span class="gradient-text">Dosha</span></h2>
+            <p class="section-sub" style="margin-bottom:0">Drag or scroll to explore Ayurvedic foods aligned with each
+                constitution.</p>
+        </div>
+        <div id="circularGalleryContainer" style="height:520px;width:100%;cursor:grab;position:relative"></div>
+        <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:8px">← drag to scroll →</p>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" id="how" style="background:var(--bg-alt)" aria-label="How it works">
+        <div class="section-container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-label">// Simple Process</span>
+                <h2 class="section-title">How <span class="gradient-text">It Works</span></h2>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card glass-card cursor-target" data-animate="fade-up" data-delay="0">
+                    <div class="step-card__num">1</div>
+                    <h3 class="step-card__title">Create Your Profile</h3>
+                    <p class="step-card__desc">Register with your age and gender. Take the initial dosha questionnaire
+                        to establish your Prakriti (constitutional type).</p>
+                </div>
+                <div class="step-card glass-card cursor-target" data-animate="fade-up" data-delay="150">
+                    <div class="step-card__num">2</div>
+                    <h3 class="step-card__title">Daily Check-In</h3>
+                    <p class="step-card__desc">Answer 10 quick questions every day about sleep, mood, digestion, and
+                        energy. Our algorithm detects your current Vikriti (imbalance).</p>
+                </div>
+                <div class="step-card glass-card cursor-target" data-animate="fade-up" data-delay="300">
+                    <div class="step-card__num">3</div>
+                    <h3 class="step-card__title">Follow Your Plan</h3>
+                    <p class="step-card__desc">Get a fully personalized daily plan — what to eat, which herbs to take,
+                        how to exercise — tailored to your dosha and current season.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" aria-label="CTA">
+        <div class="section-container" style="text-align:center">
+            <div data-animate="fade-up">
+                <span class="section-label">// Start Your Journey</span>
+                <h2 class="section-title" style="margin-bottom:20px">Ready to Discover Your <span
+                        class="gradient-text">Dosha Balance?</span></h2>
+                <p class="section-sub" style="margin-bottom:32px">Join thousands using ancient Ayurvedic wisdom for
+                    modern wellness. Free forever.</p>
+                <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+                    <a href="login.html" class="btn btn-primary btn-lg cursor-target" id="cta-register-btn">Get Started
+                        Free</a>
+                    <a href="dosha-test.html" class="btn btn-outline btn-lg cursor-target" id="cta-test-btn">Try Without
+                        Account</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard. For educational purposes. Always consult a physician.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="dosha-test.html">Dosha Test</a>
+                <a href="herb-safety.html">Herb Safety</a>
+                <a href="food-checker.html">Food Check</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot FAB -->
+    <button class="chatbot-fab" id="chatbotFab" aria-label="Open AyurBot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+    </button>
+    <div class="chatbot-panel glass-card" id="chatbotPanel">
+        <div class="chatbot-header">
+            <div>
+                <div class="chatbot-header__title">🌿 AyurBot</div>
+                <div class="chatbot-header__sub">Ayurvedic AI Assistant</div>
+            </div>
+            <button class="chatbot-close" id="chatbotClose" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="chat-msg chat-msg--bot">Namaste! 🙏 I'm AyurBot. Ask me about Doshas, herbs, food, or Ayurvedic
+                remedies.</div>
+            <div class="chat-msg chat-msg--bot">Try: "I feel bloated today" or "Is Ashwagandha safe?"</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Ask about Ayurveda..." aria-label="Chat input" />
+            <button onclick="sendChat()" id="chatSendBtn" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot
+        const fab = document.getElementById('chatbotFab');
+        const panel = document.getElementById('chatbotPanel');
+        const closeBtn = document.getElementById('chatbotClose');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        fab.addEventListener('click', () => panel.classList.toggle('open'));
+        closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+        chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+        // Simple rule-based chatbot responses
+        const CHAT_RULES = [
+            { keys: ['bloat', 'gas', 'digest', 'constip'], reply: "Try warm ginger-cumin tea after meals. Avoid cold water with food. This sounds like Vata or Kapha imbalance. Consider taking Triphala before bed." },
+            { keys: ['anxious', 'anxiety', 'worry', 'stress', 'restless'], reply: "This suggests Vata imbalance. Practice Nadi Shodhana breathing, eat warm oily foods, and take Ashwagandha with warm milk at night." },
+            { keys: ['angry', 'anger', 'irritat', 'temper'], reply: "Classic Pitta aggravation! Drink coconut water, eat cooling foods like cucumber and mint. Avoid spicy food and coffee for now." },
+            { keys: ['tired', 'fatigue', 'letharg', 'lazy', 'energy'], reply: "This is Kapha imbalance. Add ginger to your meals, do vigorous morning exercise, and try Trikatu (ginger+pepper+pippali) tea." },
+            { keys: ['skin', 'rash', 'acne', 'dry skin'], reply: "Dry skin = Vata. Rashes/acne = Pitta. Try sesame oil massage for dryness, cooling neem pack for rashes. Avoid spicy food." },
+            { keys: ['sleep', 'insomnia', 'awake', 'night'], reply: "Light/broken sleep is Vata. Heavy sleep = Kapha. For insomnia: warm sesame oil on feet before bed, Ashwagandha in warm milk, sleep before 10PM." },
+            { keys: ['ashwagandha', 'safe'], reply: "Ashwagandha is generally safe, but avoid with antidepressants (SSRIs), blood pressure meds, and thyroid medication without doctor guidance. Check the Herb Safety page for details." },
+            { keys: ['turmeric'], reply: "Turmeric is excellent for inflammation but can interact with blood thinners (Warfarin, aspirin). Culinary amounts are safe; avoid high-dose supplements with anticoagulants." },
+            { keys: ['triphala'], reply: "Triphala is a gentle daily detox. Safe for most people. Take 1 tsp in warm water before bed. Avoid high doses if on diabetes medications." },
+            { keys: ['season', 'monsoon', 'winter', 'summer'], reply: "Go to the Seasonal Guide page for detailed Ritucharya (seasonal routine) advice tailored to India's 6 seasons!" },
+            { keys: ['dosha', 'vata', 'pitta', 'kapha'], reply: "Take the Dosha Test for your current imbalance (Vikriti). Vata = air+space, Pitta = fire+water, Kapha = earth+water. Each has specific diet and lifestyle recommendations." },
+            { keys: ['food', 'eat', 'diet'], reply: "Your diet should match your dosha. Vata: warm, oily, sweet. Pitta: cool, bitter, sweet. Kapha: light, spicy, astringent. Use the Food Checker to find incompatible combinations (Viruddha Ahara)." },
+            { keys: ['headache', 'head'], reply: "Headaches can be Vata (temples), Pitta (forehead), or Kapha (sinuses). Try applying cool coconut oil for Pitta headaches, warm sesame for Vata. Brahmi is excellent for headaches." },
+            { keys: ['weight', 'fat'], reply: "Excess weight usually means Kapha imbalance. Try: Trikatu tea in morning, vigorous exercise, light dinners before 7PM, and avoid sweet/oily/cold foods." },
+            { keys: ['hello', 'hi', 'namaste', 'hey'], reply: "Namaste! 🙏 How can I help with your Ayurvedic wellness today?" },
+        ];
+
+        function sendChat() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            addMsg(msg, 'user');
+            chatInput.value = '';
+
+            setTimeout(() => {
+                const lower = msg.toLowerCase();
+                const rule = CHAT_RULES.find(r => r.keys.some(k => lower.includes(k)));
+                const reply = rule ? rule.reply : "That's a great question! For personalised guidance, try the Dosha Test or Symptom Checker. You can also check herb interactions on the Herb Safety page. 🌿";
+                addMsg(reply, 'bot');
+            }, 600);
+        }
+
+        function addMsg(text, type) {
+            const d = document.createElement('div');
+            d.className = `chat-msg chat-msg--${type}`;
+            d.textContent = text;
+            chatMessages.appendChild(d);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+    <!-- TargetCursor init -->
+    <script src="TargetCursor.js"></script>
+    <script>
+        // Wait for GSAP to be ready
+        window.addEventListener('load', function () {
+            if (typeof gsap !== 'undefined') {
+                initTargetCursor({
+                    targetSelector: '.cursor-target',
+                    spinDuration: 2,
+                    hideDefaultCursor: true,
+                    hoverDuration: 0.2,
+                    parallaxOn: true
+                });
+            }
+        });
+    </script>
+
+    <!-- CircularGallery — ES Module (OGL via CDN) -->
+    <script type="module">
+        import { initCircularGallery } from './CircularGallery.js';
+
+        const FOOD_GALLERY = [
+            { image: './images/food1.jpg', text: 'Dal Chawal' },
+            { image: './images/food2.jpg', text: 'Wellness Bowl' },
+            { image: './images/food3.jpg', text: 'Nourishing Meal' },
+            { image: './images/food4.jpg', text: 'Satvik Thali' },
+            { image: './images/food5.jpg', text: 'Ayurvedic Diet' },
+            { image: './images/food6.jpg', text: 'Fresh Greens' },
+            { image: './images/food7.jpg', text: 'Masala Bowl' },
+            { image: './images/food8.jpg', text: 'Prakriti Plate' },
+            { image: './images/food9.jpg', text: 'Wholesome Spices' },
+            { image: './images/food10.jpg', text: 'Golden Khichdi' },
+        ];
+
+        const container = document.getElementById('circularGalleryContainer');
+        if (container) {
+            initCircularGallery(container, {
+                items: FOOD_GALLERY,
+                bend: 1,
+                textColor: '#ffffff',
+                borderRadius: 0.05,
+                scrollSpeed: 2,
+                scrollEase: 0.05,
+                font: 'bold 28px Inter'
+            });
+        }
+    </script>
+</body>
+
+</html>

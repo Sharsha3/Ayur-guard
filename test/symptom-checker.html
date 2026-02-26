@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AyurGuard Symptom Checker — Detect Dosha imbalance from symptoms" />
+    <title>Symptom Checker — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script src="data/dosha-rules.js"></script>
+    <script>AG_renderNav('symptoms');</script>
+
+    <main class="page-wrapper">
+        <div style="max-width:780px;margin:0 auto;padding:32px 24px 60px;position:relative;z-index:1">
+
+            <div style="text-align:center;margin-bottom:36px" data-animate="fade-up">
+                <span class="section-label">// Quick Assessment</span>
+                <h1 class="section-title">Symptom <span class="gradient-text">Checker</span></h1>
+                <p style="color:var(--text-secondary);max-width:480px;margin:0 auto;font-size:0.95rem">Check the
+                    symptoms you are experiencing <em>right now</em>. AyurGuard will identify which Dosha is most
+                    aggravated.</p>
+            </div>
+
+            <!-- Live Scores -->
+            <div class="glass-card" style="padding:20px;margin-bottom:20px" data-animate="fade-up">
+                <div
+                    style="font-size:0.82rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px">
+                    Live Score</div>
+                <div class="symptom-scores">
+                    <div class="sscore">
+                        <div class="sscore__num" id="sv" style="color:#A78BFA">0</div>
+                        <div class="sscore__label" style="color:#A78BFA">🌬️ Vata</div>
+                    </div>
+                    <div class="sscore">
+                        <div class="sscore__num" id="sp" style="color:#FB923C">0</div>
+                        <div class="sscore__label" style="color:#FB923C">🔥 Pitta</div>
+                    </div>
+                    <div class="sscore">
+                        <div class="sscore__num" id="sk" style="color:#34D399">0</div>
+                        <div class="sscore__label" style="color:#34D399">🌊 Kapha</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptom Grid -->
+            <div class="glass-card" style="padding:24px;margin-bottom:20px" data-animate="fade-up">
+                <div style="font-size:0.95rem;font-weight:700;margin-bottom:16px">Select all symptoms you feel
+                    currently:</div>
+                <div class="symptom-grid" id="symptomGrid"></div>
+            </div>
+
+            <button class="btn btn-primary btn--full" onclick="analyzeSymptoms()" id="analyzeBtn" data-animate="fade-up"
+                style="margin-bottom:20px">
+                🔍 Analyse My Symptoms
+            </button>
+
+            <div id="symptomResult"></div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard.</p>
+            <div class="footer-links"><a href="dosha-test.html">Full Dosha Test</a><a href="herb-safety.html">Herb
+                    Safety</a></div>
+        </div>
+    </footer>
+
+    <script>
+        const checked = new Set();
+        const scores = { vata: 0, pitta: 0, kapha: 0 };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('symptomGrid');
+            grid.innerHTML = QUICK_SYMPTOMS.map((s, i) => `
+    <div class="symptom-item" id="si_${i}" onclick="toggleSymptom(${i})" role="checkbox" aria-checked="false" tabindex="0">
+      <div class="symptom-check" id="sc_${i}">
+        <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <span class="symptom-label">${s.emoji} ${s.label}</span>
+    </div>
+  `).join('');
+
+            // Keyboard support
+            grid.querySelectorAll('.symptom-item').forEach((el, i) => {
+                el.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleSymptom(i); } });
+            });
+        });
+
+        function toggleSymptom(i) {
+            const s = QUICK_SYMPTOMS[i];
+            const el = document.getElementById('si_' + i);
+            const isChecked = checked.has(i);
+
+            if (isChecked) {
+                checked.delete(i);
+                scores.vata -= s.vata;
+                scores.pitta -= s.pitta;
+                scores.kapha -= s.kapha;
+                el.classList.remove('checked');
+                el.setAttribute('aria-checked', 'false');
+            } else {
+                checked.add(i);
+                scores.vata += s.vata;
+                scores.pitta += s.pitta;
+                scores.kapha += s.kapha;
+                el.classList.add('checked');
+                el.setAttribute('aria-checked', 'true');
+            }
+            updateLiveScores();
+        }
+
+        function updateLiveScores() {
+            document.getElementById('sv').textContent = scores.vata;
+            document.getElementById('sp').textContent = scores.pitta;
+            document.getElementById('sk').textContent = scores.kapha;
+        }
+
+        function analyzeSymptoms() {
+            if (checked.size === 0) {
+                AG_toast('Please select at least one symptom.', 'error');
+                return;
+            }
+
+            const dominant = AG_getDominantDosha(scores);
+            const profile = DOSHA_PROFILES[dominant];
+            const resultEl = document.getElementById('symptomResult');
+
+            const checkedSymptoms = [...checked].map(i => QUICK_SYMPTOMS[i]);
+            const relatedSymptoms = checkedSymptoms.filter(s => s[dominant.toLowerCase()] > 0);
+
+            resultEl.innerHTML = `
+    <div class="dosha-result" style="animation:fadeInUp 0.4s ease">
+      <div class="glass-card" style="padding:28px;margin-bottom:16px;text-align:center;background:${profile.colorDark}">
+        <div style="font-size:3rem;margin-bottom:10px">${profile.emoji}</div>
+        <div style="font-size:1.6rem;font-weight:900;margin-bottom:6px">${dominant} Aggravation</div>
+        <div style="color:${profile.color};font-weight:600;font-size:0.88rem;margin-bottom:12px">${profile.element}</div>
+        <p style="color:var(--text-secondary);font-size:0.9rem;max-width:420px;margin:0 auto">${profile.description}</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="glass-card" style="padding:20px">
+          <div style="font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:12px">Your Symptoms Indicate</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            ${relatedSymptoms.slice(0, 5).map(s => `<li style="font-size:0.88rem;color:var(--text-secondary);display:flex;gap:8px"><span>${s.emoji}</span>${s.label}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="glass-card" style="padding:20px">
+          <div style="font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:12px">Immediate Remedies</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            ${profile.eat.slice(0, 4).map(i => `<li style="font-size:0.88rem;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--green)">▸</span>${i}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <div class="glass-card" style="padding:20px;margin-bottom:16px">
+        <div style="font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:12px">🌿 Suggested Herbs</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${profile.herbs.map(h => `<span style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);color:var(--green);padding:5px 12px;border-radius:20px;font-size:0.83rem;font-weight:600">${h}</span>`).join('')}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="dosha-test.html" class="btn btn-primary">Take Full Dosha Test</a>
+        <a href="herb-safety.html" class="btn btn-outline">Check Herb Safety</a>
+      </div>
+    </div>
+  `;
+
+            resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Login or Register to AyurGuard — Smart Ayurveda Companion" />
+    <title>Login — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+    <div class="particles" aria-hidden="true">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="auth-page">
+        <div class="auth-card glass-card">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <div class="auth-logo__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 2C6.5 2 4 5.5 4 9c0 4 2 6.5 5 8l1 2h4l1-2c3-1.5 5-4 5-8 0-3.5-2.5-7-8-7z"
+                            stroke="url(#lf)" stroke-width="1.5" fill="none" />
+                        <path d="M12 10 Q10 8 8 10 Q10 14 12 16 Q14 14 16 10 Q14 8 12 10z" stroke="url(#lf)"
+                            stroke-width="1.2" fill="none" />
+                        <defs>
+                            <linearGradient id="lf" x1="4" y1="2" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00C896" />
+                                <stop offset="1" stop-color="#7B61FF" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="auth-logo__text">AyurGuard</div>
+                <p style="font-size:0.82rem;color:var(--text-muted);margin-top:4px">Your Smart Ayurveda Companion</p>
+            </div>
+
+            <!-- Tab toggle -->
+            <div class="auth-tabs" role="tablist">
+                <button class="auth-tab active" id="tab-login" role="tab" aria-selected="true"
+                    onclick="switchTab('login')">Login</button>
+                <button class="auth-tab" id="tab-reg" role="tab" aria-selected="false"
+                    onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form class="auth-form" id="loginForm" novalidate aria-label="Login form">
+                <div class="form-group">
+                    <label for="l-email">Email Address</label>
+                    <input type="email" id="l-email" name="email" placeholder="you@example.com" autocomplete="email"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="l-password">Password</label>
+                    <input type="password" id="l-password" name="password" placeholder="Your password"
+                        autocomplete="current-password" required />
+                    <div class="form-error" id="loginError" style="display:none"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn--full" id="loginBtn">
+                    <span id="loginBtnText">Login to AyurGuard</span>
+                </button>
+                <p style="text-align:center;font-size:0.82rem;color:var(--text-muted)">
+                    No account? <button type="button" onclick="switchTab('register')"
+                        style="background:none;border:none;color:var(--green);cursor:pointer;font-size:0.82rem;font-weight:600;padding:0">Register
+                        free →</button>
+                </p>
+            </form>
+
+            <!-- REGISTER FORM (hidden by default) -->
+            <form class="auth-form" id="registerForm" novalidate aria-label="Registration form" style="display:none">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="r-name">Full Name</label>
+                        <input type="text" id="r-name" name="name" placeholder="Your name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="r-age">Age</label>
+                        <input type="number" id="r-age" name="age" placeholder="25" min="10" max="120" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="r-gender">Gender</label>
+                    <select id="r-gender" name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other / Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="r-email">Email Address</label>
+                    <input type="email" id="r-email" name="email" placeholder="you@example.com" autocomplete="email"
+                        required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="r-password">Password</label>
+                        <input type="password" id="r-password" name="password" placeholder="Min 6 characters"
+                            autocomplete="new-password" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="r-confirm">Confirm Password</label>
+                        <input type="password" id="r-confirm" name="confirm" placeholder="Repeat password"
+                            autocomplete="new-password" required />
+                    </div>
+                </div>
+                <div class="form-error" id="regError" style="display:none"></div>
+                <button type="submit" class="btn btn-primary btn--full" id="regBtn">
+                    <span id="regBtnText">Create Account</span>
+                </button>
+                <p style="text-align:center;font-size:0.82rem;color:var(--text-muted)">
+                    Already registered? <button type="button" onclick="switchTab('login')"
+                        style="background:none;border:none;color:var(--green);cursor:pointer;font-size:0.82rem;font-weight:600;padding:0">Login
+                        →</button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (AG_isLoggedIn()) window.location.href = 'dashboard.html';
+
+        function switchTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-reg').classList.toggle('active', tab === 'register');
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'flex' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'flex' : 'none';
+        }
+
+        // LOGIN
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('l-email').value;
+            const pass = document.getElementById('l-password').value;
+            const errEl = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            const btnTxt = document.getElementById('loginBtnText');
+
+            errEl.style.display = 'none';
+            if (!email || !pass) { errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return; }
+
+            btnTxt.textContent = 'Logging in…';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const result = AG_login(email, pass);
+                if (result.ok) {
+                    AG_toast('Welcome back, ' + result.user.name.split(' ')[0] + '! 🙏', 'success');
+                    setTimeout(() => window.location.href = 'dashboard.html', 800);
+                } else {
+                    errEl.textContent = result.error;
+                    errEl.style.display = 'block';
+                    btnTxt.textContent = 'Login to AyurGuard';
+                    btn.disabled = false;
+                }
+            }, 700);
+        });
+
+        // REGISTER
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('r-name').value.trim();
+            const age = document.getElementById('r-age').value;
+            const gender = document.getElementById('r-gender').value;
+            const email = document.getElementById('r-email').value.trim();
+            const pass = document.getElementById('r-password').value;
+            const confirm = document.getElementById('r-confirm').value;
+            const errEl = document.getElementById('regError');
+            const btn = document.getElementById('regBtn');
+            const btnTxt = document.getElementById('regBtnText');
+
+            errEl.style.display = 'none';
+
+            if (!name || !age || !gender || !email || !pass || !confirm) {
+                errEl.textContent = 'Please fill in all fields.'; errEl.style.display = 'block'; return;
+            }
+            if (pass.length < 6) {
+                errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return;
+            }
+            if (pass !== confirm) {
+                errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return;
+            }
+
+            btnTxt.textContent = 'Creating account…';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const result = AG_register(name, email, age, gender, pass);
+                if (result.ok) {
+                    // Auto-login after registration
+                    AG_login(email, pass);
+                    AG_toast('Account created! Welcome, ' + name.split(' ')[0] + '! 🌿', 'success');
+                    setTimeout(() => window.location.href = 'dosha-test.html', 900);
+                } else {
+                    errEl.textContent = result.error; errEl.style.display = 'block';
+                    btnTxt.textContent = 'Create Account'; btn.disabled = false;
+                }
+            }, 700);
+        });
+    </script>
+</body>
+
+</html>

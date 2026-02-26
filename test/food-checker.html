@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="AyurGuard Food Compatibility Checker — Viruddha Ahara (incompatible food combinations)" />
+    <title>Food Compatibility — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script src="data/food-db.js"></script>
+    <script>AG_renderNav('food');</script>
+
+    <main class="page-wrapper">
+        <div class="food-checker-wrap">
+
+            <div style="text-align:center;margin-bottom:36px" data-animate="fade-up">
+                <span class="section-label">// Viruddha Ahara</span>
+                <h1 class="section-title">Food <span class="gradient-text">Compatibility</span> Checker</h1>
+                <p style="color:var(--text-secondary);max-width:500px;margin:0 auto;font-size:0.95rem">Ayurveda
+                    identifies certain food combinations as Viruddha Ahara — toxic combinations that create Ama
+                    (digestive toxins). Check before you eat!</p>
+            </div>
+
+            <!-- Input Card -->
+            <div class="glass-card" style="padding:32px;margin-bottom:24px" data-animate="fade-up">
+                <div class="food-inputs">
+                    <div class="form-group" style="position:relative">
+                        <label for="food1">🍽️ First Food</label>
+                        <input type="text" id="food1" placeholder="e.g. Milk, Fish, Honey…" autocomplete="off"
+                            aria-label="First food" />
+                    </div>
+                    <div class="food-vs">+</div>
+                    <div class="form-group" style="position:relative">
+                        <label for="food2">🍽️ Second Food</label>
+                        <input type="text" id="food2" placeholder="e.g. Banana, Curd, Lemon…" autocomplete="off"
+                            aria-label="Second food" />
+                    </div>
+                </div>
+                <button class="btn btn-primary btn--full" onclick="checkFoods()" id="checkFoodBtn"
+                    style="margin-top:8px">
+                    🔍 Check Compatibility
+                </button>
+            </div>
+
+            <!-- Result -->
+            <div id="foodResult"></div>
+
+            <!-- Known combos -->
+            <div class="glass-card" style="padding:28px" data-animate="fade-up">
+                <div style="font-size:1rem;font-weight:700;margin-bottom:6px">📚 Known Viruddha Ahara</div>
+                <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:16px">Tap any combination to check it
+                </p>
+                <div class="known-combos" id="knownCombos"></div>
+            </div>
+
+            <!-- Educational note -->
+            <div class="disclaimer" style="margin-top:20px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+                    aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <p><strong>Note:</strong> Viruddha Ahara is based on classical Ayurvedic texts (Charaka Samhita,
+                    Ashtanga Hridayam). While some interactions have modern scientific support, individual responses
+                    vary. Use as educational guidance.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard.</p>
+            <div class="footer-links"><a href="dosha-test.html">Dosha Test</a><a href="herb-safety.html">Herb
+                    Safety</a><a href="seasonal-guide.html">Seasonal</a></div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AG_autocomplete(document.getElementById('food1'), FOODS_LIST);
+            AG_autocomplete(document.getElementById('food2'), FOODS_LIST);
+
+            ['food1', 'food2'].forEach(id => {
+                document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkFoods(); });
+            });
+
+            // Show known combos (show incompatible ones first)
+            const incompatible = FOOD_COMBINATIONS.filter(c => c.incompatible).slice(0, 6);
+            const compatible = FOOD_COMBINATIONS.filter(c => !c.incompatible).slice(0, 3);
+
+            document.getElementById('knownCombos').innerHTML = [...incompatible, ...compatible].map(c => `
+    <div class="kc-chip kc-chip--${c.incompatible ? 'bad' : 'ok'}"
+         onclick="quickFill('${c.food1}','${c.food2}')"
+         role="button" tabindex="0"
+         title="${c.incompatible ? '⛔ Incompatible' : '✅ Compatible'}">
+      <div style="font-weight:600">${c.food1} + ${c.food2}</div>
+      <div style="font-size:0.72rem;margin-top:3px;color:${c.incompatible ? 'var(--red)' : 'var(--green)'}">
+        ${c.incompatible ? '⛔ ' + c.severity.toUpperCase() + ' RISK' : '✅ COMPATIBLE'}
+      </div>
+    </div>
+  `).join('');
+        });
+
+        function quickFill(f1, f2) {
+            document.getElementById('food1').value = f1;
+            document.getElementById('food2').value = f2;
+            checkFoods();
+        }
+
+        function checkFoods() {
+            const f1 = document.getElementById('food1').value.trim();
+            const f2 = document.getElementById('food2').value.trim();
+            const resultEl = document.getElementById('foodResult');
+
+            if (!f1 || !f2) { AG_toast('Please enter two foods to check.', 'error'); return; }
+            if (f1.toLowerCase() === f2.toLowerCase()) { AG_toast('Please enter two different foods.', 'error'); return; }
+
+            const combo = findFoodCombination(f1, f2);
+
+            if (!combo) {
+                resultEl.innerHTML = `
+      <div class="food-result glass-card" style="padding:28px;margin-bottom:20px;text-align:center">
+        <div style="font-size:3rem;margin-bottom:12px">🤷</div>
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">No data found for this combination</div>
+        <p style="color:var(--text-secondary);font-size:0.88rem;max-width:380px;margin:0 auto;line-height:1.6">
+          Classical Ayurvedic texts don't specifically classify <strong>${f1}</strong> + <strong>${f2}</strong>. 
+          As a general rule, avoid mixing raw and cooked foods, or cold and hot foods together.
+        </p>
+      </div>`;
+                return;
+            }
+
+            const isIncompat = combo.incompatible;
+            const sevColors = { high: 'var(--red)', moderate: 'var(--gold)', low: 'var(--green)', none: 'var(--green)' };
+            const sevPips = { high: 3, moderate: 2, low: 1, none: 0 };
+            const numPips = sevPips[combo.severity] || 0;
+
+            resultEl.innerHTML = `
+    <div class="food-result" style="margin-bottom:20px">
+      <div class="compat-badge compat-badge--${isIncompat ? 'bad' : 'ok'}">
+        ${isIncompat ? '⛔' : '✅'} ${combo.food1} + ${combo.food2} — ${isIncompat ? 'INCOMPATIBLE (Viruddha)' : 'COMPATIBLE'}
+      </div>
+
+      ${isIncompat && numPips > 0 ? `
+      <div class="severity-bar">
+        <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600">Severity:</span>
+        ${[1, 2, 3].map(n => `<div class="severity-pip" style="background:${n <= numPips ? sevColors[combo.severity] : 'rgba(255,255,255,0.06)'}"></div>`).join('')}
+        <span style="font-size:0.8rem;font-weight:700;color:${sevColors[combo.severity]}">${combo.severity.toUpperCase()}</span>
+      </div>` : ''}
+
+      <div class="glass-card" style="padding:24px;margin-bottom:14px">
+        <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px">📖 Reason</div>
+        <div style="font-weight:600;color:${isIncompat ? sevColors[combo.severity] : 'var(--green)'};margin-bottom:14px">${combo.reason}</div>
+
+        <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px">📋 Ayurvedic Explanation</div>
+        <div style="font-size:0.92rem;color:var(--text-secondary);line-height:1.75;margin-bottom:14px">${combo.explanation}</div>
+
+        <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px">⚡ Effect</div>
+        <div style="font-size:0.92rem;color:var(--text-secondary);line-height:1.7;margin-bottom:${combo.alternative ? '14px' : '0'}">
+          ${combo.effect}
+        </div>
+
+        ${combo.alternative ? `
+        <div style="background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.2);border-radius:10px;padding:14px">
+          <div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--green);margin-bottom:6px">💡 Alternative / Tip</div>
+          <div style="font-size:0.88rem;color:var(--text-secondary);line-height:1.7">${combo.alternative}</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+
+            resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+
+</html>

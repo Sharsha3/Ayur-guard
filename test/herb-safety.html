@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AyurGuard Herb Safety Checker — Check herb-medicine interactions" />
+    <title>Herb Safety Checker — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script src="data/herb-db.js"></script>
+    <script>AG_renderNav('herb');</script>
+
+    <main class="page-wrapper">
+        <div class="herb-checker-wrap">
+
+            <!-- Header -->
+            <div style="text-align:center;margin-bottom:36px" data-animate="fade-up">
+                <span class="section-label">// Safety Analysis</span>
+                <h1 class="section-title">Herb &amp; Medicine <span class="gradient-text">Safety Checker</span></h1>
+                <p style="color:var(--text-secondary);max-width:500px;margin:0 auto;font-size:0.95rem">Check
+                    interactions between Ayurvedic herbs and modern medications. Risk levels rated: Low, Moderate, High.
+                </p>
+            </div>
+
+            <!-- Checker Card -->
+            <div class="glass-card" style="padding:32px;margin-bottom:28px" data-animate="fade-up">
+                <div class="herb-inputs">
+                    <div class="form-group" style="position:relative">
+                        <label for="herbInput">🌿 Ayurvedic Herb</label>
+                        <input type="text" id="herbInput" placeholder="e.g. Ashwagandha, Turmeric…" autocomplete="off"
+                            aria-label="Enter herb name" aria-autocomplete="list" />
+                    </div>
+                    <div class="herb-vs" style="padding-top:26px">⚡ + </div>
+                    <div class="form-group" style="position:relative">
+                        <label for="medInput">💊 Medicine / Drug</label>
+                        <input type="text" id="medInput" placeholder="e.g. Warfarin, Metformin…" autocomplete="off"
+                            aria-label="Enter medicine name" aria-autocomplete="list" />
+                    </div>
+                </div>
+                <button class="btn btn-primary btn--full" onclick="checkInteraction()" id="checkBtn"
+                    style="margin-top:8px">
+                    🔍 Check Interaction
+                </button>
+            </div>
+
+            <!-- Result area -->
+            <div id="resultArea"></div>
+
+            <!-- Common High-Risk Combos -->
+            <div class="glass-card" style="padding:28px" data-animate="fade-up">
+                <div style="font-size:1rem;font-weight:700;margin-bottom:6px">⚠️ Known High-Risk Combinations</div>
+                <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:16px">Click any combination to check
+                    it instantly</p>
+                <div class="common-combos" id="commonCombos"></div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer" style="margin-top:20px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+                    aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <p><strong>Medical Disclaimer:</strong> This tool is for <strong>educational purposes only</strong>.
+                    Always consult a qualified physician, Ayurvedic practitioner, or pharmacist before combining herbs
+                    with medications. Individual responses can vary significantly.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard. Educational use only.</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="dosha-test.html">Dosha Test</a><a
+                    href="food-checker.html">Food Check</a></div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Autocomplete
+            AG_autocomplete(document.getElementById('herbInput'), HERBS_LIST);
+            AG_autocomplete(document.getElementById('medInput'), MEDICINES_LIST);
+
+            // Enter key
+            ['herbInput', 'medInput'].forEach(id => {
+                document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkInteraction(); });
+            });
+
+            // Common combos
+            const HIGH_RISK = HERB_INTERACTIONS.filter(i => i.riskLevel === 'high').slice(0, 6);
+            const MODERATE = HERB_INTERACTIONS.filter(i => i.riskLevel === 'moderate').slice(0, 6);
+            const shown = [...HIGH_RISK, ...MODERATE].slice(0, 8);
+            document.getElementById('commonCombos').innerHTML = shown.map(c => `
+    <div class="combo-chip combo-chip--${c.riskLevel}" onclick="quickFill('${c.herb}','${c.medicine}')" role="button" tabindex="0" title="Click to check">
+      <span>${c.herb} + ${c.medicine}</span>
+      <span class="combo-chip__risk">${c.riskLevel.toUpperCase()}</span>
+    </div>
+  `).join('');
+        });
+
+        function quickFill(herb, med) {
+            document.getElementById('herbInput').value = herb;
+            document.getElementById('medInput').value = med;
+            checkInteraction();
+        }
+
+        function checkInteraction() {
+            const herb = document.getElementById('herbInput').value.trim();
+            const med = document.getElementById('medInput').value.trim();
+            const resultArea = document.getElementById('resultArea');
+
+            if (!herb || !med) {
+                AG_toast('Please enter both a herb and a medicine.', 'error');
+                return;
+            }
+
+            const result = findInteraction(herb, med);
+            if (!result) {
+                resultArea.innerHTML = `
+      <div class="herb-result glass-card" style="padding:28px;margin-bottom:20px;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">🤷</div>
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">No interaction data found</div>
+        <p style="color:var(--text-secondary);font-size:0.9rem;max-width:400px;margin:0 auto">
+          We don't have data for <strong>${herb}</strong> + <strong>${med}</strong> combination. 
+          This does <em>not</em> mean it's safe. Always consult a qualified practitioner.
+        </p>
+      </div>`;
+                return;
+            }
+
+            const riskColors = { high: 'var(--red)', moderate: 'var(--gold)', low: 'var(--green)', none: 'var(--green)' };
+            const riskIcons = { high: '🔴', moderate: '🟡', low: '🟢', none: '✅' };
+            const color = riskColors[result.riskLevel];
+
+            resultArea.innerHTML = `
+    <div class="herb-result" style="margin-bottom:20px">
+      <div class="risk-badge risk-badge--${result.riskLevel}">
+        ${riskIcons[result.riskLevel]} ${result.riskLevel.toUpperCase()} RISK — ${result.herb} + ${result.medicine}
+      </div>
+
+      <div class="interaction-card glass-card">
+        <div class="interaction-card__label">⚙️ Mechanism</div>
+        <div class="interaction-card__val" style="font-weight:600;color:${color};margin-bottom:16px">${result.mechanism}</div>
+
+        <div class="interaction-card__label">📋 Clinical Explanation</div>
+        <div class="interaction-card__val" style="margin-bottom:16px">${result.explanation}</div>
+
+        <div class="interaction-card__label">⚠️ Potential Effects</div>
+        <div class="interaction-card__val" style="color:${result.riskLevel === 'high' ? 'var(--red)' : 'inherit'};margin-bottom:16px">${result.effect}</div>
+
+        <div class="interaction-card__label">💡 Recommendation</div>
+        <div class="interaction-card__val" style="background:rgba(0,200,150,0.06);border:1px solid rgba(0,200,150,0.15);border-radius:8px;padding:12px">${result.recommendation}</div>
+      </div>
+    </div>`;
+            // Scroll to result
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+
+</html>

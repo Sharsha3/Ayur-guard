@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AyurGuard Dosha Test — Discover your Vata, Pitta, or Kapha imbalance" />
+    <title>Dosha Test — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script src="data/dosha-rules.js"></script>
+    <script>AG_renderNav('dosha');</script>
+
+    <main class="page-wrapper">
+        <div class="dosha-test-wrap">
+
+            <!-- Header -->
+            <div style="text-align:center;margin-bottom:40px" data-animate="fade-up">
+                <span class="section-label">// Daily Check-In</span>
+                <h1 class="section-title">Dosha <span class="gradient-text">Balance Test</span></h1>
+                <p style="color:var(--text-secondary);max-width:480px;margin:0 auto;font-size:0.95rem">Answer 10
+                    questions honestly about how you feel <em>today</em> — not in general. This detects your current
+                    Vikriti (imbalance).</p>
+            </div>
+
+            <!-- Quiz View -->
+            <div id="quizView">
+                <!-- Progress -->
+                <div class="dosha-progress">
+                    <div class="dosha-progress__bar-wrap">
+                        <div class="dosha-progress__bar" id="progressBar" style="width:10%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <span class="dosha-progress__text" id="progressText">Question 1 of 10</span>
+                        <div class="dosha-live-scores" id="liveScores" style="gap:10px;margin-top:0">
+                            <div class="score-bar-item score-bar--vata">
+                                <div class="score-bar-item__label"><span style="color:#A78BFA">🌬️ Vata</span><span
+                                        id="vs">0</span></div>
+                                <div class="score-bar-item__bar">
+                                    <div class="score-bar-item__fill" id="vBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="score-bar-item score-bar--pitta">
+                                <div class="score-bar-item__label"><span style="color:#FB923C">🔥 Pitta</span><span
+                                        id="ps">0</span></div>
+                                <div class="score-bar-item__bar">
+                                    <div class="score-bar-item__fill" id="pBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="score-bar-item score-bar--kapha">
+                                <div class="score-bar-item__label"><span style="color:#34D399">🌊 Kapha</span><span
+                                        id="ks">0</span></div>
+                                <div class="score-bar-item__bar">
+                                    <div class="score-bar-item__fill" id="kBar" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Card -->
+                <div class="dosha-question glass-card" id="questionCard">
+                    <div class="dosha-question__cat" id="qCat"></div>
+                    <div class="dosha-question__text" id="qText"></div>
+                    <div class="dosha-options" id="qOptions"></div>
+                    <div class="dosha-nav">
+                        <button class="btn btn-outline btn-sm" id="prevBtn" onclick="prevQ()"
+                            style="visibility:hidden">← Back</button>
+                        <button class="btn btn-primary btn-sm" id="nextBtn" onclick="nextQ()" disabled>Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result View (hidden initially) -->
+            <div id="resultView" style="display:none">
+                <div class="dosha-result">
+                    <div class="result-hero glass-card" id="resultHero"></div>
+                    <div class="result-grid" id="resultGrid"></div>
+                    <div class="glass-card" style="padding:24px;margin-bottom:16px" id="routineCard"></div>
+                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+                        <button class="btn btn-primary" onclick="saveAndGoToDashboard()" id="saveDashBtn">
+                            💾 Save & View Dashboard
+                        </button>
+                        <button class="btn btn-outline" onclick="retakeTest()">Retake Test</button>
+                        <a href="herb-safety.html" class="btn btn-ghost">Check Herb Safety →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let current = 0;
+        const scores = { vata: 0, pitta: 0, kapha: 0 };
+        const answers = {};  // questionId -> optionIndex
+
+        function renderQuestion() {
+            const q = DOSHA_QUESTIONS[current];
+            const total = DOSHA_QUESTIONS.length;
+
+            document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+            document.getElementById('progressText').textContent = `Question ${current + 1} of ${total}`;
+            document.getElementById('qCat').innerHTML = `<span class="dosha-question__num">${current + 1}</span> ${q.icon} ${q.category}`;
+            document.getElementById('qText').textContent = q.question;
+
+            const optsEl = document.getElementById('qOptions');
+            optsEl.innerHTML = q.options.map((opt, i) => `
+    <button class="dosha-option ${answers[q.id] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+      <div class="dosha-option__icon">${['🌬️', '🔥', '🌊'][i]}</div>
+      <span>${opt.text}</span>
+    </button>
+  `).join('');
+
+            document.getElementById('prevBtn').style.visibility = current > 0 ? 'visible' : 'hidden';
+            document.getElementById('nextBtn').textContent = current === total - 1 ? 'See Results →' : 'Next →';
+            document.getElementById('nextBtn').disabled = answers[DOSHA_QUESTIONS[current].id] === undefined;
+            updateScoreBars();
+        }
+
+        function selectOption(i) {
+            const q = DOSHA_QUESTIONS[current];
+            // Remove previous score from this question if re-answering
+            if (answers[q.id] !== undefined) {
+                const prev = q.options[answers[q.id]];
+                scores.vata -= prev.vata;
+                scores.pitta -= prev.pitta;
+                scores.kapha -= prev.kapha;
+            }
+            // Add new score
+            answers[q.id] = i;
+            const opt = q.options[i];
+            scores.vata += opt.vata;
+            scores.pitta += opt.pitta;
+            scores.kapha += opt.kapha;
+
+            // Re-render options with selection
+            const optsEl = document.getElementById('qOptions');
+            optsEl.querySelectorAll('.dosha-option').forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === i);
+            });
+            document.getElementById('nextBtn').disabled = false;
+            updateScoreBars();
+        }
+
+        function updateScoreBars() {
+            const max = Math.max(scores.vata, scores.pitta, scores.kapha, 1);
+            document.getElementById('vs').textContent = scores.vata;
+            document.getElementById('ps').textContent = scores.pitta;
+            document.getElementById('ks').textContent = scores.kapha;
+            document.getElementById('vBar').style.width = (scores.vata / max * 100) + '%';
+            document.getElementById('pBar').style.width = (scores.pitta / max * 100) + '%';
+            document.getElementById('kBar').style.width = (scores.kapha / max * 100) + '%';
+        }
+
+        function nextQ() {
+            if (answers[DOSHA_QUESTIONS[current].id] === undefined) {
+                AG_toast('Please select an option first.', 'error');
+                return;
+            }
+            if (current < DOSHA_QUESTIONS.length - 1) {
+                current++;
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQ() {
+            if (current > 0) { current--; renderQuestion(); }
+        }
+
+        function showResult() {
+            const dominant = AG_getDominantDosha(scores);
+            const profile = DOSHA_PROFILES[dominant];
+
+            document.getElementById('quizView').style.display = 'none';
+            document.getElementById('resultView').style.display = 'block';
+
+            // Hero card
+            document.getElementById('resultHero').innerHTML = `
+    <div style="background:${profile.colorDark};border-radius:12px;padding:28px;text-align:center">
+      <span class="result-emoji">${profile.emoji}</span>
+      <div class="result-title">${dominant} Imbalance</div>
+      <div style="color:${profile.color};font-size:0.85rem;font-weight:600;margin-bottom:12px">${profile.element}</div>
+      <div class="result-desc">${profile.description}</div>
+    </div>
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:20px">
+      ${['Vata', 'Pitta', 'Kapha'].map(d => {
+                const p = DOSHA_PROFILES[d];
+                const s = scores[d.toLowerCase()];
+                const max = Math.max(scores.vata, scores.pitta, scores.kapha, 1);
+                const pct = Math.round(s / max * 100);
+                return `<div style="text-align:center;flex:1">
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px">${p.emoji} ${d}</div>
+          <div style="height:80px;background:rgba(255,255,255,0.04);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden">
+            <div style="width:100%;height:${pct}%;background:${p.color};border-radius:4px;transition:height 1s ease"></div>
+          </div>
+          <div style="font-size:0.85rem;font-weight:700;margin-top:6px;color:${p.color}">${s}</div>
+        </div>`;
+            }).join('')}
+    </div>
+  `;
+
+            // Grid cards
+            document.getElementById('resultGrid').innerHTML = `
+    <div class="result-card glass-card">
+      <div class="result-card__title">✅ Foods to Eat</div>
+      <ul class="result-list">${profile.eat.map(i => `<li><span class="dot"></span>${i}</li>`).join('')}</ul>
+    </div>
+    <div class="result-card glass-card">
+      <div class="result-card__title">❌ Foods to Avoid</div>
+      <ul class="result-list">${profile.avoid.map(i => `<li><span class="dot avoid"></span>${i}</li>`).join('')}</ul>
+    </div>
+  `;
+
+            // Routine card
+            document.getElementById('routineCard').innerHTML = `
+    <div class="result-card__title" style="margin-bottom:16px">🧘 Daily Routine</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${profile.routine.map(r => `<div style="display:flex;align-items:flex-start;gap:8px;font-size:0.88rem;color:var(--text-secondary)"><span style="color:var(--green);flex-shrink:0">▸</span>${r}</div>`).join('')}
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:0.82rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Yoga & Meditation</div>
+      <div style="font-size:0.88rem;color:var(--text-secondary)">${profile.yoga}</div>
+      <div style="font-size:0.88rem;color:var(--text-secondary);margin-top:4px">${profile.meditation}</div>
+    </div>
+  `;
+
+            // Save to history
+            window._lastResult = { dominant, vata: scores.vata, pitta: scores.pitta, kapha: scores.kapha };
+        }
+
+        function saveAndGoToDashboard() {
+            if (window._lastResult) {
+                AG_saveResult(window._lastResult);
+                AG_setPrakriti(window._lastResult.dominant);
+                AG_toast('Result saved! 🌿', 'success');
+            }
+            setTimeout(() => window.location.href = 'dashboard.html', 600);
+        }
+
+        function retakeTest() {
+            current = 0;
+            Object.keys(scores).forEach(k => scores[k] = 0);
+            Object.keys(answers).forEach(k => delete answers[k]);
+            document.getElementById('resultView').style.display = 'none';
+            document.getElementById('quizView').style.display = 'block';
+            renderQuestion();
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', renderQuestion);
+    </script>
+</body>
+
+</html>

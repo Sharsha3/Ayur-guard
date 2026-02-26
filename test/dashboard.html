@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AyurGuard Dashboard — Your daily Ayurveda health overview" />
+    <title>Dashboard — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script>
+        AG_requireAuth();
+        AG_renderNav('dashboard');
+    </script>
+
+    <main class="page-wrapper" style="padding-bottom:60px">
+        <div class="section-container">
+
+            <!-- Welcome Header -->
+            <div style="margin-bottom:32px" data-animate="fade-up">
+                <span class="section-label">// Your Health Overview</span>
+                <h1 class="section-title" style="text-align:left;margin-bottom:8px">Good <span id="greeting"
+                        class="gradient-text">Morning</span>, <span id="userName">User</span> 🙏</h1>
+                <p style="color:var(--text-muted);font-size:0.9rem" id="dateStr"></p>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="dashboard-grid" style="margin-bottom:28px">
+                <div class="dash-stat glass-card" data-animate="fade-up" data-delay="0">
+                    <div class="dash-stat__label">Today's Imbalance (Vikriti)</div>
+                    <div class="dash-stat__val" id="todayDosha">—</div>
+                    <div id="doshaBadge" style="margin-top:6px"></div>
+                </div>
+                <div class="dash-stat glass-card" data-animate="fade-up" data-delay="100">
+                    <div class="dash-stat__label">Your Constitution (Prakriti)</div>
+                    <div class="dash-stat__val gradient-text" id="prakritiVal">Not Set</div>
+                    <div class="dash-stat__sub">Take Dosha Test to set</div>
+                </div>
+                <div class="dash-stat glass-card" data-animate="fade-up" data-delay="200">
+                    <div class="dash-stat__label">Current Season</div>
+                    <div class="dash-stat__val" id="seasonVal" style="font-size:1.5rem">—</div>
+                    <div class="dash-stat__sub" id="seasonSub"></div>
+                </div>
+            </div>
+
+            <!-- Weekly Chart + Today's Plan grid -->
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-bottom:28px">
+                <!-- Weekly chart -->
+                <div class="chart-wrap glass-card" data-animate="fade-left">
+                    <div class="chart-title">📊 7-Day Dosha Trend</div>
+                    <div class="chart" id="weekChart" aria-label="Weekly dosha chart"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#A78BFA"></div>Vata
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#FB923C"></div>Pitta
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#34D399"></div>Kapha
+                        </div>
+                    </div>
+                    <p id="noChartData"
+                        style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:20px 0;display:none">
+                        Complete daily Dosha Tests to see your trend chart here.</p>
+                </div>
+
+                <!-- Today's plan -->
+                <div class="glass-card" style="padding:24px" data-animate="fade-right">
+                    <div style="font-size:1rem;font-weight:700;margin-bottom:16px">🌿 Today's Ayurvedic Plan</div>
+                    <div id="todayPlan">
+                        <p style="color:var(--text-muted);font-size:0.88rem">Complete today's Dosha Test to get your
+                            personalized plan.</p>
+                        <a href="dosha-test.html" class="btn btn-primary btn--full" style="margin-top:16px">Take Today's
+                            Test</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div data-animate="fade-up">
+                <div
+                    style="font-size:0.9rem;font-weight:700;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted)">
+                    Quick Actions</div>
+                <div class="quick-actions">
+                    <a href="dosha-test.html" class="qa-card glass-card" id="qa-dosha">
+                        <div class="qa-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                        <div class="qa-card__label">Daily Dosha Test</div>
+                    </a>
+                    <a href="symptom-checker.html" class="qa-card glass-card" id="qa-symptoms">
+                        <div class="qa-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)"
+                                stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" />
+                                <line x1="9" y1="9" x2="15" y2="9" />
+                                <line x1="9" y1="13" x2="13" y2="13" />
+                                <path d="M9 17l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <div class="qa-card__label">Symptom Check</div>
+                    </a>
+                    <a href="herb-safety.html" class="qa-card glass-card" id="qa-herb">
+                        <div class="qa-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)"
+                                stroke-width="2">
+                                <path
+                                    d="M12 2C6.5 2 4 5.5 4 9c0 4 2 6.5 5 8l1 2h4l1-2c3-1.5 5-4 5-8 0-3.5-2.5-7-8-7z" />
+                            </svg>
+                        </div>
+                        <div class="qa-card__label">Herb Safety</div>
+                    </a>
+                    <a href="food-checker.html" class="qa-card glass-card" id="qa-food">
+                        <div class="qa-card__icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                                stroke-width="2">
+                                <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                                <line x1="6" y1="1" x2="6" y2="4" />
+                                <line x1="10" y1="1" x2="10" y2="4" />
+                                <line x1="14" y1="1" x2="14" y2="4" />
+                            </svg>
+                        </div>
+                        <div class="qa-card__label">Food Check</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div style="margin-top:28px" data-animate="fade-up">
+                <div
+                    style="font-size:0.9rem;font-weight:700;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted)">
+                    Today's Recommendations</div>
+                <div class="reco-grid" id="recoGrid">
+                    <div class="reco-card glass-card">
+                        <div class="reco-card__title">🥗 Diet Guidance</div>
+                        <ul class="reco-list" id="eatList">
+                            <li>Take today's dosha test for personalized recommendations</li>
+                        </ul>
+                    </div>
+                    <div class="reco-card glass-card">
+                        <div class="reco-card__title">🚫 Foods to Avoid</div>
+                        <ul class="reco-list" id="avoidList">
+                            <li class="avoid">Complete your daily check-in first</li>
+                        </ul>
+                    </div>
+                    <div class="reco-card glass-card">
+                        <div class="reco-card__title">🧘 Routine & Lifestyle</div>
+                        <ul class="reco-list" id="routineList">
+                            <li>Your personalized routine appears after test</li>
+                        </ul>
+                    </div>
+                    <div class="reco-card glass-card">
+                        <div class="reco-card__title">🌿 Suggested Herbs</div>
+                        <ul class="reco-list" id="herbList">
+                            <li>Herb recommendations based on your dosha</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard. For educational purposes only.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="dosha-test.html">Dosha Test</a>
+                <a href="herb-safety.html">Herb Safety</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data/dosha-rules.js"></script>
+    <script src="data/seasonal-db.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = AG_getUser();
+            if (!user) return;
+
+            // Greeting
+            const h = new Date().getHours();
+            document.getElementById('greeting').textContent = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
+            document.getElementById('userName').textContent = user.name.split(' ')[0];
+            document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+            // Prakriti
+            if (user.prakriti) {
+                document.getElementById('prakritiVal').textContent = user.prakriti;
+            }
+
+            // Season
+            const season = getCurrentSeason();
+            if (season) {
+                document.getElementById('seasonVal').textContent = season.emoji + ' ' + season.english;
+                document.getElementById('seasonSub').textContent = season.name + ' — ' + season.months;
+            }
+
+            // Today's result
+            const today = AG_getTodayResult();
+            if (today) {
+                const dosha = today.dominant;
+                document.getElementById('todayDosha').textContent = dosha;
+                document.getElementById('todayDosha').className = 'dash-stat__val gradient-text';
+
+                const profile = DOSHA_PROFILES[dosha];
+                if (profile) {
+                    document.getElementById('doshaBadge').innerHTML = `<span class="dash-dosha-badge" style="color:${profile.color};border-color:${profile.color}">${profile.emoji} ${dosha} Imbalance</span>`;
+
+                    // Today's plan card
+                    document.getElementById('todayPlan').innerHTML = `
+        <div style="background:${profile.colorDark};border:1px solid ${profile.color}33;border-radius:12px;padding:16px;margin-bottom:14px">
+          <div style="font-size:1.6rem;margin-bottom:6px">${profile.emoji}</div>
+          <div style="font-weight:700;color:${profile.color};margin-bottom:6px">${dosha} Imbalance</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">${profile.description}</div>
+        </div>
+        <a href="dosha-test.html" class="btn btn-ghost btn--full" style="font-size:0.82rem">Retake Today's Test</a>
+      `;
+
+                    // Reco lists
+                    setList('eatList', profile.eat.slice(0, 4), false);
+                    setList('avoidList', profile.avoid.slice(0, 4), true);
+                    setList('routineList', profile.routine.slice(0, 4), false);
+                    setList('herbList', profile.herbs, false);
+                }
+            } else {
+                document.getElementById('todayDosha').textContent = 'Not Checked';
+                document.getElementById('doshaBadge').innerHTML = `<a href="dosha-test.html" class="btn btn-gold btn-sm" style="margin-top:4px">Take Today's Test →</a>`;
+            }
+
+            // Weekly chart
+            renderChart();
+        });
+
+        function setList(id, items, isAvoid) {
+            const el = document.getElementById(id);
+            el.innerHTML = items.map(i => `<li class="${isAvoid ? 'avoid' : ''}">${i}</li>`).join('');
+        }
+
+        function renderChart() {
+            const history = AG_getWeekHistory();
+            const chart = document.getElementById('weekChart');
+            const noData = document.getElementById('noChartData');
+
+            if (history.length === 0) {
+                chart.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+
+            const maxScore = Math.max(...history.flatMap(h => [h.vata || 0, h.pitta || 0, h.kapha || 0]), 1);
+
+            chart.innerHTML = history.map(h => {
+                const day = new Date(h.date).toLocaleDateString('en', { weekday: 'short' });
+                const v = Math.round(((h.vata || 0) / maxScore) * 100);
+                const p = Math.round(((h.pitta || 0) / maxScore) * 100);
+                const k = Math.round(((h.kapha || 0) / maxScore) * 100);
+                return `
+      <div class="chart-bar-group">
+        <div class="chart-bars">
+          <div class="chart-bar chart-bar--vata"  style="height:${v}%" title="Vata: ${h.vata || 0}"></div>
+          <div class="chart-bar chart-bar--pitta" style="height:${p}%" title="Pitta: ${h.pitta || 0}"></div>
+          <div class="chart-bar chart-bar--kapha" style="height:${k}%" title="Kapha: ${h.kapha || 0}"></div>
+        </div>
+        <div class="chart-day">${day}</div>
+      </div>
+    `;
+            }).join('');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AyurGuard Seasonal Guide — Ritucharya seasonal Ayurveda lifestyle advice" />
+    <title>Seasonal Guide — AyurGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-glow page-glow--tl" aria-hidden="true"></div>
+    <div class="page-glow page-glow--br" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+    <script src="data/seasonal-db.js"></script>
+    <script>AG_renderNav('seasonal');</script>
+
+    <main class="page-wrapper">
+        <div style="max-width:900px;margin:0 auto;padding:32px 24px 60px;position:relative;z-index:1">
+
+            <div style="text-align:center;margin-bottom:36px" data-animate="fade-up">
+                <span class="section-label">// Ritucharya</span>
+                <h1 class="section-title">Seasonal <span class="gradient-text">Ayurveda Guide</span></h1>
+                <p style="color:var(--text-secondary);max-width:520px;margin:0 auto;font-size:0.95rem">Ayurveda
+                    prescribes specific diet, lifestyle, and herbs for each of India's 6 seasons. Follow Ritucharya to
+                    stay in harmony with nature.</p>
+            </div>
+
+            <!-- Season Switcher -->
+            <div class="season-switcher" id="seasonSwitcher" data-animate="fade-up"></div>
+
+            <!-- Season Display -->
+            <div id="seasonDisplay" data-animate="fade-up"></div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">🌿 AyurGuard</div>
+            <p class="footer-copy">&copy; 2026 AyurGuard.</p>
+            <div class="footer-links"><a href="dosha-test.html">Dosha Test</a><a href="herb-safety.html">Herb Safety</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentSeason = null;
+        let activeTab = 'diet';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render season buttons
+            const switcher = document.getElementById('seasonSwitcher');
+            const current = getCurrentSeason();
+            currentSeason = current ? current.name : Object.keys(SEASONS)[0];
+
+            switcher.innerHTML = Object.values(SEASONS).map(s => `
+    <button class="season-btn ${s.name === currentSeason ? 'active' : ''}" 
+            onclick="loadSeason('${s.name}')"
+            id="sbtn_${s.name}"
+            style="${s.name === currentSeason ? `color:${s.color};border-color:${s.color}` : ''}">
+      ${s.emoji} ${s.english} ${s.name === (current && current.name) ? '(Now)' : ''}
+    </button>
+  `).join('');
+
+            loadSeason(currentSeason);
+        });
+
+        function loadSeason(name) {
+            currentSeason = name;
+            const s = SEASONS[name];
+            activeTab = 'diet';
+
+            // Update button styles
+            document.querySelectorAll('.season-btn').forEach(b => {
+                const bn = b.id.replace('sbtn_', '');
+                const sc = SEASONS[bn].color;
+                b.classList.toggle('active', bn === name);
+                b.style.color = bn === name ? sc : '';
+                b.style.borderColor = bn === name ? sc : '';
+            });
+
+            renderSeasonContent(s);
+        }
+
+        function setActiveTab(tab, s) {
+            activeTab = tab;
+            document.querySelectorAll('.season-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.getElementById('seasonTabContent').innerHTML = getTabContent(tab, s);
+        }
+
+        function renderSeasonContent(s) {
+            document.getElementById('seasonDisplay').innerHTML = `
+    <div class="season-hero glass-card" style="background:${s.colorDark}">
+      <span class="season-emoji">${s.emoji}</span>
+      <div class="season-name gradient-text">${s.name}</div>
+      <div class="season-months">${s.english} · ${s.months}</div>
+      <span class="season-dosha-badge" style="color:${s.color};border-color:${s.color}33">
+        Dominant Dosha: ${s.dominantDosha}
+      </span>
+      <p class="season-desc">${s.description}</p>
+    </div>
+
+    <div class="season-tabs" id="seasonTabs">
+      ${['diet', 'routine', 'herbs', 'yoga'].map(tab => `
+        <button class="season-tab ${tab === activeTab ? 'active' : ''}" 
+                data-tab="${tab}"
+                onclick="setActiveTab('${tab}', SEASONS['${s.name}'])">
+          ${{ diet: '🥗 Diet', routine: '🧘 Routine', herbs: '🌿 Herbs', yoga: '🏃 Yoga' }[tab]}
+        </button>
+      `).join('')}
+    </div>
+
+    <div id="seasonTabContent">
+      ${getTabContent(activeTab, s)}
+    </div>
+
+    <!-- Warning card -->
+    <div class="glass-card" style="padding:20px;border-color:rgba(245,166,35,0.25);background:rgba(245,166,35,0.05)">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <span style="font-size:1.2rem">⚠️</span>
+        <div>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:4px">Seasonal Watch</div>
+          <div style="font-size:0.88rem;color:var(--text-secondary)">${s.warning}</div>
+        </div>
+      </div>
+    </div>
+  `;
+        }
+
+        function getTabContent(tab, s) {
+            if (tab === 'diet') {
+                return `
+      <div class="season-content-grid">
+        <div class="season-card glass-card">
+          <div class="season-card__title">✅ Foods to Eat</div>
+          <ul class="s-list">${s.diet.eat.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+        <div class="season-card glass-card">
+          <div class="season-card__title">❌ Foods to Avoid</div>
+          <ul class="s-list">${s.diet.avoid.map(i => `<li class="avoid">${i}</li>`).join('')}</ul>
+        </div>
+      </div>`;
+            }
+            if (tab === 'routine') {
+                return `
+      <div class="glass-card" style="padding:24px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          ${Object.entries(s.routine).map(([k, v]) => `
+            <div style="padding:14px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:600;margin-bottom:5px">${k}</div>
+              <div style="font-size:0.9rem;color:var(--text-secondary)">${v}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+            }
+            if (tab === 'herbs') {
+                return `
+      <div class="glass-card" style="padding:28px">
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">Recommended herbs &amp; formulations for ${s.english}:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          ${s.herbs.map(h => `<span style="background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);color:var(--green);padding:8px 16px;border-radius:20px;font-size:0.88rem;font-weight:600">${h}</span>`).join('')}
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
+          <span style="font-size:1.2rem">💡</span>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Consult a qualified Ayurvedic practitioner before starting herbal supplements. Some herbs interact with medications — use the <a href="herb-safety.html" style="color:var(--green)">Herb Safety Checker</a> to verify.</p>
+        </div>
+      </div>`;
+            }
+            if (tab === 'yoga') {
+                return `
+      <div class="glass-card" style="padding:28px">
+        <div style="margin-bottom:20px">
+          <div style="font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px">🧘 Yoga Practice</div>
+          <div style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7">${s.yoga}</div>
+        </div>
+        <div style="padding-top:16px;border-top:1px solid var(--border)">
+          <div style="font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px">🌬️ Pranayama</div>
+          <div style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7">${s.pranayama}</div>
+        </div>
+      </div>`;
+            }
+            return '';
+        }
+    </script>
+</body>
+
+</html>
